@@ -26,7 +26,7 @@ public class Main {
 		System.out.println("Teste: " + testing.numInstances());
 		
 		Algorithm algorithm = new Algorithm();
-		Classifier classy = algorithm.getJ48();//algorithm.getInputMappedClassifier();
+		Classifier classy = algorithm.getRandomForest();//algorithm.getInputMappedClassifier();
 //		classy.setClassifier(algorithm.getJ48());
 		
 		classy.buildClassifier(training);
@@ -35,7 +35,9 @@ public class Main {
 		Evaluation eval = new Evaluation(training);		
 		eval.evaluateModel(classy, testing);
 		
+		System.out.println(eval.toCumulativeMarginDistributionString());
         System.out.println(eval.toSummaryString());
+        System.out.println(eval.toClassDetailsString());
         System.out.println(eval.toMatrixString());
 	}
 	
