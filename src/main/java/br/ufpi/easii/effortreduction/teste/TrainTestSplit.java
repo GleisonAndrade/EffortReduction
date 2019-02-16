@@ -1,4 +1,4 @@
-package br.ufpi.easii.effortreduction.main;
+package br.ufpi.easii.effortreduction.teste;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
