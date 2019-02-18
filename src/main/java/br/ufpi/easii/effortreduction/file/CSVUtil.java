@@ -21,7 +21,7 @@ public class CSVUtil {
 	
 	private String fileName;
 	private List<PerformanceData> listData = new ArrayList<>();
-	private FilesUtil filesUtil = new FilesUtil();
+//	private FilesUtil filesUtil = new FilesUtil();
 	
 	public void addData(String algorithm, boolean attributeSelection, Integer totalTraining, Integer totalTest, Integer truePositive, Integer falsePositive, Double recallAccepted){
 		addData(new PerformanceData(algorithm, attributeSelection, totalTraining, totalTest, truePositive, falsePositive, recallAccepted));
@@ -38,7 +38,7 @@ public class CSVUtil {
 			data = data.concat(performanceData.getDataCSV()+endLine);
 		}
 		
-		filesUtil.generateFile(fileName, data);
+		FilesUtil.generateFile(fileName + ".csv", data);
 	}
 
 	/**
@@ -54,5 +54,19 @@ public class CSVUtil {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
+
+	/**
+	 * @return the listData
+	 */
+	public List<PerformanceData> getListData() {
+		return listData;
+	}
+
+	/**
+	 * @param listData the listData to set
+	 */
+	public void setListData(List<PerformanceData> listData) {
+		this.listData = listData;
+	}	
 
 }
