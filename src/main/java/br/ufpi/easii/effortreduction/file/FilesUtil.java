@@ -19,7 +19,7 @@ public class FilesUtil {
 								{"tools-ic", "59", "118", "178", "237", "297", "356", "415", "475", "534"},
 								{"thasciano", "141", "282", "423", "564", "705", "846", "986", "1128", "1269"}};
 	
-	public void generateFile(String name, String data){
+	public static void generateFile(String name, String data){
 		FileWriter writer;
 		try {
 			writer = new FileWriter(name);
