@@ -38,7 +38,7 @@ public class CSVUtil {
 			data = data.concat(performanceData.getDataCSV()+endLine);
 		}
 		
-		FilesUtil.generateFile(fileName, data);
+		FilesUtil.generateFile(fileName + ".csv", data);
 	}
 
 	/**
@@ -54,5 +54,19 @@ public class CSVUtil {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
+
+	/**
+	 * @return the listData
+	 */
+	public List<PerformanceData> getListData() {
+		return listData;
+	}
+
+	/**
+	 * @param listData the listData to set
+	 */
+	public void setListData(List<PerformanceData> listData) {
+		this.listData = listData;
+	}	
 
 }

@@ -3,12 +3,6 @@
  */
 package br.ufpi.easii.effortreduction.main;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import br.ufpi.easii.effortreduction.PerformanceData;
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
@@ -17,6 +11,7 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.misc.InputMappedClassifier;
 import weka.core.Instances;
 import weka.core.Utils;
+import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 
 /**
@@ -24,18 +19,21 @@ import weka.filters.Filter;
  *
  */
 public class EvaluationAlgorithm {
-	
-	public PerformanceData performanceData(Classifier classifier, Algorithm algorithm, String trainFile, String testFile, boolean selection) throws Exception {
-		Instances training = getData(trainFile, 1);
-		
-		if(selection)
+	private Instances training;
+	private Instances testing;
+
+	public PerformanceData buildClassifier(Classifier classifier, Algorithm algorithm, boolean selection)
+			throws Exception {
+//		Instances training = getData(trainFile, 1);
+
+		if (selection)
 			training = selectFeaturesWithFilter(training);
 
-		Instances testing = getData(testFile, 1);
+//		Instances testing = getData(testFile, 1);
 
 		InputMappedClassifier classy = algorithm.getInputMappedClassifier();
 		classy.setClassifier(classifier);
-
+		classy.setSuppressMappingReport(true);
 		classy.buildClassifier(training);
 
 		Evaluation evaluation = new Evaluation(training);
@@ -46,20 +44,37 @@ public class EvaluationAlgorithm {
 		// System.out.println(eval.toClassDetailsString());
 //		System.out.println(evaluation.toMatrixString());
 
-		return new PerformanceData(algorithm.name(classifier), selection, training.numInstances(), testing.numInstances(), (int)evaluation.numTruePositives(0), (int)evaluation.numFalsePositives(0),
+		return new PerformanceData(algorithm.name(classifier), selection, training.numInstances(),
+				testing.numInstances(), (int) evaluation.numTruePositives(0), (int) evaluation.numFalsePositives(0),
 				evaluation.recall(1));
 	}
 
-	private static Instances getData(String filename, Integer posClass) throws IOException, URISyntaxException {
-		File file = new File(filename);
-		BufferedReader inputReader = new BufferedReader(new FileReader(file));
-		Instances data = new Instances(inputReader);
-		data.setClass(data.attribute("finalEvaluate"));
+	public void loadFiles(String pathTrainFile, String pathTestFile) {
+		this.training = getData(pathTestFile);
+		this.testing = getData(pathTestFile);
+	}
+
+	private Instances getData(String filename) {
+//		File file = new File(filename);
+//		BufferedReader inputReader;
+		Instances data = null;
+
+		try {
+//			inputReader = new BufferedReader(new FileReader(file));
+//			data = new Instances(inputReader);
+			// Read all the instances in the file (ARFF, CSV, XRFF, ...)
+			DataSource source = new DataSource(filename);
+			data = source.getDataSet();
+			data.setClass(data.attribute("finalEvaluate"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return data;
 	}
 
-	public static Instances selectFeaturesWithFilter(Instances data) throws Exception {
+	public Instances selectFeaturesWithFilter(Instances data) throws Exception {
 		// weka.filters.supervised.attribute.AttributeSelection -E
 		// "weka.attributeSelection.CfsSubsetEval -P 1 -E 1" -S
 		// "weka.attributeSelection.BestFirst -D 1 -N 5"
