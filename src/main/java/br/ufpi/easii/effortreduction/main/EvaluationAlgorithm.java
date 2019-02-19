@@ -4,6 +4,7 @@
 package br.ufpi.easii.effortreduction.main;
 
 import br.ufpi.easii.effortreduction.PerformanceData;
+import br.ufpi.easii.effortreduction.file.CSVToArff;
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.classifiers.Classifier;
@@ -21,6 +22,7 @@ import weka.filters.Filter;
 public class EvaluationAlgorithm {
 	private Instances training;
 	private Instances testing;
+	private CSVToArff csvToArff = new CSVToArff();
 
 	public PerformanceData buildClassifier(Classifier classifier, Algorithm algorithm, boolean selection)
 			throws Exception {
@@ -50,7 +52,24 @@ public class EvaluationAlgorithm {
 	}
 
 	public void loadFiles(String pathTrainFile, String pathTestFile) {
-		this.training = getData(pathTestFile);
+		String path = "";
+		String name = "";
+		
+		if(pathTrainFile.endsWith(".csv")){
+			path = pathTrainFile.substring(0, pathTrainFile.lastIndexOf("\\"));
+			name = pathTrainFile.substring(pathTrainFile.lastIndexOf("\\")+1, pathTrainFile.length()-4);
+			
+			csvToArff.generateArffFile(path, name, ",", name);
+		}
+		
+		if(pathTestFile.endsWith(".csv")){
+			path = pathTestFile.substring(0, pathTestFile.lastIndexOf("\\"));
+			name = pathTestFile.substring(pathTestFile.lastIndexOf("\\")+1, pathTestFile.length()-4);
+			
+			csvToArff.generateArffFile(path, name, ",", name);
+		}
+		
+		this.training = getData(pathTestFile);		
 		this.testing = getData(pathTestFile);
 	}
 

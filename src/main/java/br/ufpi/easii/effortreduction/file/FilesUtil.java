@@ -11,7 +11,7 @@ import java.io.IOException;
  *
  */
 public class FilesUtil {
-	public static final String MAIN_PATH = "C:\\Users\\gleys\\OneDrive\\Documentos\\maps-2000";//"D:\\Google Drive\\Testes Mestrado\\maps";
+	public static final String MAIN_PATH = "C:\\Users\\gleys\\OneDrive\\Documentos\\maps-2000";//" D:\\Google Drive\\Testes Mestrado\\maps";
 	
 	private static String [][] paths = {{"code-familiarity", "28", "56", "84", "112", "141", "169", "197", "225", "253"},
 								{"martony", "320", "640", "960", "1281", "1601", "1921", "2242", "2562", "2882"},

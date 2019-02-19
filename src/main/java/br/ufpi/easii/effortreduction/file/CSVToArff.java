@@ -25,7 +25,7 @@ public class CSVToArff {
 	}
 	
 	private void saveArff(String path, String fileArffName) {
-		FilesUtil.generateFile(path + "/" + fileArffName, dataArff);		
+		FilesUtil.generateFile(path + "\\" + fileArffName + ".arff", dataArff);		
 	}
 
 	public void readFile(String path, String fileName, String sep){
@@ -33,7 +33,7 @@ public class CSVToArff {
 		String line = "";
 		
 		try {
-			bufferedReader = new BufferedReader(new FileReader(path + "/" + fileName));
+			bufferedReader = new BufferedReader(new FileReader(path + "\\" + fileName + ".csv"));
 			line = bufferedReader.readLine();
 			
 			splitAttributes(line);
