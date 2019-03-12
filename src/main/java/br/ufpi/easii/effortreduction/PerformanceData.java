@@ -14,33 +14,46 @@ public class PerformanceData {
 	private Integer totalTraining;
 	private Integer totalTest;
 	
+	private Integer trueNegative;
+	private Integer falseNegative;
+	
 	private Integer truePositive;
 	private Integer falsePositive;
 	
 	private Double recallAccepted;
 	
+	private Integer countAttribute;
+
 	/**
 	 * @param algorithm
 	 * @param attributeSelection
 	 * @param totalTraining
 	 * @param totalTest
+	 * @param trueNegative
+	 * @param falseNegative
 	 * @param truePositive
 	 * @param falsePositive
 	 * @param recallAccepted
+	 * @param countAttribute
 	 */
-	public PerformanceData(String algorithm, boolean attributeSelection, Integer totalTraining, Integer totalTest, Integer truePositive, Integer falsePositive, Double recallAccepted) {
+	public PerformanceData(String algorithm, boolean attributeSelection, Integer totalTraining, Integer totalTest,
+			Integer trueNegative, Integer falseNegative, Integer truePositive, Integer falsePositive,
+			Double recallAccepted, Integer countAttribute) {
 		super();
 		this.algorithm = algorithm;
 		this.attributeSelection = attributeSelection;
 		this.totalTraining = totalTraining;
 		this.totalTest = totalTest;
+		this.trueNegative = trueNegative;
+		this.falseNegative = falseNegative;
 		this.truePositive = truePositive;
 		this.falsePositive = falsePositive;
 		this.recallAccepted = recallAccepted;
+		this.countAttribute = countAttribute;
 	}
 
 	public Double calculateWSS(){
-		return (truePositive + falsePositive)/((totalTraining+totalTest)-(1-recallAccepted));
+		return (trueNegative + falseNegative)/((totalTraining+totalTest)-(1-recallAccepted));
 	}
 
 	/**
@@ -82,14 +95,14 @@ public class PerformanceData {
 	 * @return the truePositive
 	 */
 	public Integer getTruePositive() {
-		return truePositive;
+		return trueNegative;
 	}
 
 	/**
 	 * @return the falsePositive
 	 */
 	public Integer getFalsePositive() {
-		return falsePositive;
+		return falseNegative;
 	}
 
 	/**
@@ -124,14 +137,14 @@ public class PerformanceData {
 	 * @param truePositive the truePositive to set
 	 */
 	public void setTruePositive(Integer truePositive) {
-		this.truePositive = truePositive;
+		this.trueNegative = truePositive;
 	}
 
 	/**
 	 * @param falsePositive the falsePositive to set
 	 */
 	public void setFalsePositive(Integer falsePositive) {
-		this.falsePositive = falsePositive;
+		this.falseNegative = falsePositive;
 	}
 
 	/**
@@ -141,7 +154,50 @@ public class PerformanceData {
 		this.recallAccepted = recallAccepted;
 	}
 
+	/**
+	 * @return the trueNegative
+	 */
+	public Integer getTrueNegative() {
+		return trueNegative;
+	}
+
+	/**
+	 * @param trueNegative the trueNegative to set
+	 */
+	public void setTrueNegative(Integer trueNegative) {
+		this.trueNegative = trueNegative;
+	}
+
+	/**
+	 * @return the falseNegative
+	 */
+	public Integer getFalseNegative() {
+		return falseNegative;
+	}
+
+	/**
+	 * @param falseNegative the falseNegative to set
+	 */
+	public void setFalseNegative(Integer falseNegative) {
+		this.falseNegative = falseNegative;
+	}
+
+	/**
+	 * @return the countAttribute
+	 */
+	public Integer getCountAttribute() {
+		return countAttribute;
+	}
+
+	/**
+	 * @param countAttribute the countAttribute to set
+	 */
+	public void setCountAttribute(Integer countAttribute) {
+		this.countAttribute = countAttribute;
+	}
+
 	public String getDataCSV() {
-		return String.format("%s;%b;%d;%d;%d;%d;%.3f;%.3f", algorithm, attributeSelection, totalTraining, totalTest, truePositive, falsePositive, recallAccepted, calculateWSS());
+//		"Algorithm;Selection;CountAttribute;TotalTraining;TotalTest;TrueNegative;FalseNegative;TruePositive;FalsePositive;RecallAccepted;WSS\n"
+		return String.format("%s;%b;%d;%d;%d;%d;%d;%d;%d;%.3f;%.3f", algorithm, attributeSelection, countAttribute, totalTraining, totalTest, trueNegative, falseNegative, truePositive, falsePositive, recallAccepted, calculateWSS());
 	}
 }

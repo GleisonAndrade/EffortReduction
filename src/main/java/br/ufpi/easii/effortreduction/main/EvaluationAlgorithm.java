@@ -21,37 +21,37 @@ import weka.filters.Filter;
  */
 public class EvaluationAlgorithm {
 	private Instances training;
+	private Instances trainingSelected;
 	private Instances testing;
 	private CSVToArff csvToArff = new CSVToArff();
 
 	public PerformanceData buildClassifier(Classifier classifier, Algorithm algorithm, boolean selection)
 			throws Exception {
-//		Instances training = getData(trainFile, 1);
 
-		if (selection)
-			training = selectFeaturesWithFilter(training);
+//		if (selection)
+//			training = selectFeaturesWithFilter(training);
 
 //		Instances testing = getData(testFile, 1);
 
 		InputMappedClassifier classy = algorithm.getInputMappedClassifier();
 		classy.setClassifier(classifier);
 		classy.setSuppressMappingReport(true);
-		classy.buildClassifier(training);
+		classy.buildClassifier(/*selection ? trainingSelected :*/ training);
 
-		Evaluation evaluation = new Evaluation(training);
+		Evaluation evaluation = new Evaluation(/*selection ? trainingSelected :*/ training);
 		evaluation.evaluateModel(classy, testing);
 
 		// System.out.println(eval.toCumulativeMarginDistributionString());
 		// System.out.println(eval.toSummaryString());
 		// System.out.println(eval.toClassDetailsString());
 //		System.out.println(evaluation.toMatrixString());
-
-		return new PerformanceData(algorithm.name(classifier), selection, training.numInstances(),
-				testing.numInstances(), (int) evaluation.numTruePositives(0), (int) evaluation.numFalsePositives(0),
-				evaluation.recall(1));
+		
+		return new PerformanceData(algorithm.name(classifier), selection, (/*selection ? trainingSelected :*/ training).numInstances(), testing.numInstances(), 
+				(int) evaluation.numTrueNegatives(0), (int) evaluation.numFalseNegatives(0), (int) evaluation.numTruePositives(0), 
+				(int) evaluation.numFalsePositives(0), evaluation.recall(0), (/*selection ? trainingSelected :*/ training).numAttributes());
 	}
 
-	public void loadFiles(String pathTrainFile, String pathTestFile) {
+	public void loadFiles(String pathTrainFile, String pathTestFile, String mapName){
 		String path = "";
 		String name = "";
 		
@@ -59,17 +59,26 @@ public class EvaluationAlgorithm {
 			path = pathTrainFile.substring(0, pathTrainFile.lastIndexOf("\\"));
 			name = pathTrainFile.substring(pathTrainFile.lastIndexOf("\\")+1, pathTrainFile.length()-4);
 			
-			csvToArff.generateArffFile(path, name, ",", name);
+			csvToArff.generateArffFile(path, name, ",", name, mapName);
+			pathTrainFile = path + "\\" + name + ".arff";
 		}
 		
 		if(pathTestFile.endsWith(".csv")){
 			path = pathTestFile.substring(0, pathTestFile.lastIndexOf("\\"));
 			name = pathTestFile.substring(pathTestFile.lastIndexOf("\\")+1, pathTestFile.length()-4);
 			
-			csvToArff.generateArffFile(path, name, ",", name);
+			csvToArff.generateArffFile(path, name, ",", name, mapName);
+			pathTestFile = path + "\\" + name + ".arff";
 		}
 		
-		this.training = getData(pathTestFile);		
+		this.training = getData(pathTrainFile);
+		
+		try {
+			this.trainingSelected = selectFeaturesWithFilter(training);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		this.testing = getData(pathTestFile);
 	}
 

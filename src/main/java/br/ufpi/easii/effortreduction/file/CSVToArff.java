@@ -14,18 +14,17 @@ public class CSVToArff {
 	
 	private String dataArff = "";
 	
-	public void generateArffFile(String path, String fileCSVName, String sep, String fileArffName){
-		dataArff += relationBuild(fileArffName);
+	public void generateArffFile(String path, String fileCSVName, String sep, String fileArffName, String mapName){
+		dataArff += relationBuild(mapName + "_" +fileArffName);
 		
 		readFile(path, fileCSVName, sep);
-		
-		dataArff += classBuild();
 		
 		saveArff(path, fileArffName);
 	}
 	
 	private void saveArff(String path, String fileArffName) {
 		FilesUtil.generateFile(path + "\\" + fileArffName + ".arff", dataArff);		
+		this.dataArff = "";
 	}
 
 	public void readFile(String path, String fileName, String sep){
@@ -36,11 +35,17 @@ public class CSVToArff {
 			bufferedReader = new BufferedReader(new FileReader(path + "\\" + fileName + ".csv"));
 			line = bufferedReader.readLine();
 			
+			dataArff += classBuild();
 			splitAttributes(line);
+			dataArff += dataBuild();
 			
-			dataBuild();
+			int count = 0;
+			
 			while ((line = bufferedReader.readLine()) != null){
-				dataArff += (line + "\n");
+				if(count != 0)
+					dataArff += ("\n");
+				dataArff += line;
+				count++;
 			}
 			
 		} catch (Exception e) {
@@ -55,6 +60,8 @@ public class CSVToArff {
 		for (int i = 1; i < max; i++){
 			dataArff  += attributeBuild(data[i]);
 		}
+		
+		dataArff += "\n";
 	}
 
 	private String relationBuild(String dataName) {
@@ -66,7 +73,7 @@ public class CSVToArff {
 	}
 	
 	private String classBuild(){
-		return "@attribute finalEvaluate {ACCEPTED,REJECTED}\n\n";
+		return "@attribute finalEvaluate {ACCEPTED,REJECTED}\n";
 	}
 
 	private String dataBuild() {

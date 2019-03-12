@@ -17,14 +17,16 @@ import br.ufpi.easii.effortreduction.PerformanceData;
 public class CSVUtil {
 	public static final String separator = ";";
 	public static final String endLine = "\n";
-	public static final String header = "Algorithm;Selection;TotalTraining;TotalTest;TruePositive;FalsePositive;RecallAccepted;WSS\n";
+	public static final String header = "Algorithm;Selection;CountAttribute;TotalTraining;TotalTest;TrueNegative;FalseNegative;TruePositive;FalsePositive;RecallAccepted;WSS\n";
 	
 	private String fileName;
 	private List<PerformanceData> listData = new ArrayList<>();
 //	private FilesUtil filesUtil = new FilesUtil();
 	
-	public void addData(String algorithm, boolean attributeSelection, Integer totalTraining, Integer totalTest, Integer truePositive, Integer falsePositive, Double recallAccepted){
-		addData(new PerformanceData(algorithm, attributeSelection, totalTraining, totalTest, truePositive, falsePositive, recallAccepted));
+	public void addData(String algorithm, boolean attributeSelection, Integer totalTraining, Integer totalTest,
+			Integer trueNegative, Integer falseNegative, Integer truePositive, Integer falsePositive,
+			Double recallAccepted, Integer countAttribute){
+		addData(new PerformanceData(algorithm, attributeSelection, totalTraining, totalTest, trueNegative, falseNegative, truePositive, falsePositive, recallAccepted, countAttribute));
 	}
 	
 	public void addData(PerformanceData data){
