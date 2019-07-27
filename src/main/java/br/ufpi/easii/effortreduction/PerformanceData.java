@@ -23,22 +23,14 @@ public class PerformanceData {
 	private Double recallAccepted;
 	
 	private Integer countAttribute;
+	
+	private Integer freq_max;
+	private Integer freq_min;
 
-	/**
-	 * @param algorithm
-	 * @param attributeSelection
-	 * @param totalTraining
-	 * @param totalTest
-	 * @param trueNegative
-	 * @param falseNegative
-	 * @param truePositive
-	 * @param falsePositive
-	 * @param recallAccepted
-	 * @param countAttribute
-	 */
+
 	public PerformanceData(String algorithm, boolean attributeSelection, Integer totalTraining, Integer totalTest,
 			Integer trueNegative, Integer falseNegative, Integer truePositive, Integer falsePositive,
-			Double recallAccepted, Integer countAttribute) {
+			Double recallAccepted, Integer countAttribute, Integer freq_max, Integer freq_min) {
 		super();
 		this.algorithm = algorithm;
 		this.attributeSelection = attributeSelection;
@@ -50,6 +42,8 @@ public class PerformanceData {
 		this.falsePositive = falsePositive;
 		this.recallAccepted = recallAccepted;
 		this.countAttribute = countAttribute;
+		this.freq_max = freq_max;
+		this.freq_min = freq_min;
 	}
 
 	public Double calculateWSS(){
@@ -197,7 +191,7 @@ public class PerformanceData {
 	}
 
 	public String getDataCSV() {
-//		"Algorithm;Selection;CountAttribute;TotalTraining;TotalTest;TrueNegative;FalseNegative;TruePositive;FalsePositive;RecallAccepted;WSS\n"
-		return String.format("%s;%b;%d;%d;%d;%d;%d;%d;%d;%.3f;%.3f", algorithm, attributeSelection, countAttribute, totalTraining, totalTest, trueNegative, falseNegative, truePositive, falsePositive, recallAccepted, calculateWSS());
+//		"Algorithm;Max;MinSelection;CountAttribute;TotalTraining;TotalTest;TrueNegative;FalseNegative;TruePositive;FalsePositive;RecallAccepted;WSS\n"
+		return String.format("%s;%d;%d;%b;%d;%d;%d;%d;%d;%d;%d;%.3f;%.3f", algorithm, freq_max, freq_min, attributeSelection, countAttribute, totalTraining, totalTest, trueNegative, falseNegative, truePositive, falsePositive, recallAccepted, calculateWSS());
 	}
 }

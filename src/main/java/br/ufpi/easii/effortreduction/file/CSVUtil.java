@@ -17,7 +17,7 @@ import br.ufpi.easii.effortreduction.PerformanceData;
 public class CSVUtil {
 	public static final String separator = ";";
 	public static final String endLine = "\n";
-	public static final String header = "Algorithm;Selection;CountAttribute;TotalTraining;TotalTest;TrueNegative;FalseNegative;TruePositive;FalsePositive;RecallAccepted;WSS\n";
+	public static final String header = "Algorithm;Max;Min;Selection;CountAttribute;TotalTraining;TotalTest;TrueNegative;FalseNegative;TruePositive;FalsePositive;RecallAccepted;WSS\n";
 	
 	private String fileName;
 	private List<PerformanceData> listData = new ArrayList<>();
@@ -25,16 +25,16 @@ public class CSVUtil {
 	
 	public void addData(String algorithm, boolean attributeSelection, Integer totalTraining, Integer totalTest,
 			Integer trueNegative, Integer falseNegative, Integer truePositive, Integer falsePositive,
-			Double recallAccepted, Integer countAttribute){
-		addData(new PerformanceData(algorithm, attributeSelection, totalTraining, totalTest, trueNegative, falseNegative, truePositive, falsePositive, recallAccepted, countAttribute));
+			Double recallAccepted, Integer countAttribute, Integer freq_max, Integer freq_min){
+		addData(new PerformanceData(algorithm, attributeSelection, totalTraining, totalTest, trueNegative, falseNegative, truePositive, falsePositive, recallAccepted, countAttribute, freq_max, freq_min));
 	}
 	
 	public void addData(PerformanceData data){
 		listData.add(data);
 	}
 	
-	public void generateCSV(){
-		String data = header;
+	public void generateCSV(boolean addHeader){
+		String data = addHeader ? header : "";
 		
 		for (PerformanceData performanceData : listData) {
 			data = data.concat(performanceData.getDataCSV()+endLine);

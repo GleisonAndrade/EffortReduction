@@ -3,6 +3,8 @@
  */
 package br.ufpi.easii.effortreduction.main;
 
+import java.io.File;
+
 import br.ufpi.easii.effortreduction.PerformanceData;
 import br.ufpi.easii.effortreduction.file.CSVToArff;
 import weka.attributeSelection.BestFirst;
@@ -25,7 +27,7 @@ public class EvaluationAlgorithm {
 	private Instances testing;
 	private CSVToArff csvToArff = new CSVToArff();
 
-	public PerformanceData buildClassifier(Classifier classifier, Algorithm algorithm, boolean selection)
+	public PerformanceData buildClassifier(Classifier classifier, Algorithm algorithm, boolean selection, Integer freq_max, Integer freq_min)
 			throws Exception {
 
 //		if (selection)
@@ -36,50 +38,93 @@ public class EvaluationAlgorithm {
 		InputMappedClassifier classy = algorithm.getInputMappedClassifier();
 		classy.setClassifier(classifier);
 		classy.setSuppressMappingReport(true);
-		classy.buildClassifier(/*selection ? trainingSelected :*/ training);
+		classy.buildClassifier(selection ? trainingSelected : training);
 
-		Evaluation evaluation = new Evaluation(/*selection ? trainingSelected :*/ training);
+		Evaluation evaluation = new Evaluation(selection ? trainingSelected : training);
 		evaluation.evaluateModel(classy, testing);
 
 		// System.out.println(eval.toCumulativeMarginDistributionString());
 		// System.out.println(eval.toSummaryString());
 		// System.out.println(eval.toClassDetailsString());
 //		System.out.println(evaluation.toMatrixString());
-		
-		return new PerformanceData(algorithm.name(classifier), selection, (/*selection ? trainingSelected :*/ training).numInstances(), testing.numInstances(), 
-				(int) evaluation.numTrueNegatives(0), (int) evaluation.numFalseNegatives(0), (int) evaluation.numTruePositives(0), 
-				(int) evaluation.numFalsePositives(0), evaluation.recall(0), (/*selection ? trainingSelected :*/ training).numAttributes());
+
+		return new PerformanceData(algorithm.name(classifier), selection,
+				(selection ? trainingSelected : training).numInstances(), testing.numInstances(),
+				(int) evaluation.numTrueNegatives(0), (int) evaluation.numFalseNegatives(0),
+				(int) evaluation.numTruePositives(0), (int) evaluation.numFalsePositives(0), evaluation.recall(0),
+				(selection ? trainingSelected : training).numAttributes(), freq_max, freq_min);
 	}
 
-	public void loadFiles(String pathTrainFile, String pathTestFile, String mapName){
+	private String generateArffFile(String pathFile, String mapName) throws Exception {
 		String path = "";
 		String name = "";
 		
-		if(pathTrainFile.endsWith(".csv")){
-			path = pathTrainFile.substring(0, pathTrainFile.lastIndexOf("\\"));
-			name = pathTrainFile.substring(pathTrainFile.lastIndexOf("\\")+1, pathTrainFile.length()-4);
-			
+		String pathReplace = pathFile.replace("csv", "arff");
+		
+		boolean fileFind = fileFind(pathReplace);
+		
+		if (!fileFind) {
+			if (!fileFind(pathFile))
+				throw new Exception("File "+pathFile+" not found!");
+
+			path = pathFile.substring(0, pathFile.lastIndexOf("\\"));
+			name = pathFile.substring(pathFile.lastIndexOf("\\") + 1, pathFile.length() - 4);
+
 			csvToArff.generateArffFile(path, name, ",", name, mapName);
-			pathTrainFile = path + "\\" + name + ".arff";
+			
+			deleteFileCSV(pathFile);		
+		}else {
+			//Deletar .csv se ainda existir
+			if(pathFile.contains(".csv") && fileFind(pathFile)) {
+				deleteFileCSV(pathFile);
+			}
 		}
 		
-		if(pathTestFile.endsWith(".csv")){
-			path = pathTestFile.substring(0, pathTestFile.lastIndexOf("\\"));
-			name = pathTestFile.substring(pathTestFile.lastIndexOf("\\")+1, pathTestFile.length()-4);
-			
-			csvToArff.generateArffFile(path, name, ",", name, mapName);
-			pathTestFile = path + "\\" + name + ".arff";
+		return pathReplace;
+	}
+
+	private void deleteFileCSV(String pathFile) {
+		File file = new File(pathFile);
+		
+		if(file.exists()) {
+			file.delete();
 		}
+		
+	}
+
+	public void loadFiles(String pathTrainFile, String pathTestFile, String mapName) throws Exception {
+		//Se existir os arquivos arff e não existir o csv é porque foi calculado no result4-v2, assim eu não preciso calcular novamente
+		String pathReplaceTrain = pathTrainFile.replace("csv", "arff");
+		String pathReplaceTest = pathTestFile.replace("csv", "arff");
+		
+		boolean existeTrainCSV = fileFind(pathTrainFile);
+		boolean existeTrainARFF = fileFind(pathReplaceTrain);
+		
+		boolean existeTestCSV = fileFind(pathTestFile);
+		boolean existeTestARFF = fileFind(pathReplaceTest);
+		
+		if(existeTrainARFF && existeTestARFF && !existeTrainCSV && !existeTestCSV) {
+			throw new Exception("Files "+pathReplaceTrain+", "+pathReplaceTest+" já foram avaliados!");
+		}		
+		
+		pathTrainFile = generateArffFile(pathTrainFile, mapName);
+		pathTestFile = generateArffFile(pathTestFile, mapName);
 		
 		this.training = getData(pathTrainFile);
-		
+
 		try {
-			this.trainingSelected = selectFeaturesWithFilter(training);
+			this.trainingSelected = selectFeaturesWithFilter(this.training);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
-		
+
 		this.testing = getData(pathTestFile);
+	}
+
+	private boolean fileFind(String path) {
+		File file = new File(path);
+
+		return file.exists();
 	}
 
 	private Instances getData(String filename) {

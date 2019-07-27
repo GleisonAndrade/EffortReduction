@@ -40,25 +40,25 @@ public class Algorithm {
 
 	public void inicializaAlgoritmos() {
 		try {
-			naiveBayes = new NaiveBayes();
+//			naiveBayes = new NaiveBayes();
 //			naiveBayes.setOptions(Utils.splitOptions("-R 1"));
-			algorithms.add(naiveBayes);
+//			algorithms.add(naiveBayes);
 
 			complementNaiveBayes = new ComplementNaiveBayes();
 			complementNaiveBayes.setOptions(Utils.splitOptions("-S 1.0"));
 			algorithms.add(complementNaiveBayes);
 
-			smo = new SMO();
-			smo.setOptions(Utils.splitOptions("-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\""));
-			algorithms.add(smo);
-			
-			j48 = new J48();
-			j48.setOptions(Utils.splitOptions("-C 0.25 -M 2"));
-			algorithms.add(j48);
-
-			randomForest = new RandomForest();
-			randomForest.setOptions(Utils.splitOptions("-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1"));
-			algorithms.add(randomForest);
+//			smo = new SMO();
+//			smo.setOptions(Utils.splitOptions("-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.PolyKernel -E 1.0 -C 250007\" -calibrator \"weka.classifiers.functions.Logistic -R 1.0E-8 -M -1 -num-decimal-places 4\""));
+//			algorithms.add(smo);
+//			
+//			j48 = new J48();
+//			j48.setOptions(Utils.splitOptions("-C 0.25 -M 2"));
+//			algorithms.add(j48);
+//
+//			randomForest = new RandomForest();
+//			randomForest.setOptions(Utils.splitOptions("-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1"));
+//			algorithms.add(randomForest);
 			
 			inputMappedClassifier = new InputMappedClassifier();
 		} catch (Exception e) {

@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
+import br.ufpi.easii.effortreduction.file.FilesUtil;
 import br.ufpi.easii.effortreduction.main.Algorithm;
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
@@ -24,7 +26,27 @@ import weka.filters.Filter;
  *
  */
 public class Main {
-	public static void main(String[] args) throws Exception {
+	
+	public static void main(String[] args) {
+		ArrayList<Double> freq_top = FilesUtil.generateVector(0.4, 1.0, 0.01);
+		
+		for (Double d : freq_top) {
+			System.out.print(d + " ");
+		}
+		
+		System.out.println();
+		
+		ArrayList<Double> freq_down = FilesUtil.generateVector(0.01, 0.39, 0.01);
+		
+		for (Double d : freq_down) {
+			System.out.print(d + " ");
+		}
+		
+		System.out.println();
+	}
+	
+	
+	public static void mainnnnnn(String[] args) throws Exception {
 		Instances training = getData("/treinamento.arff", 1);
 		System.out.println("Treinamento: " + training.numInstances());
 		training=selectFeaturesWithFilter(training);
